@@ -77,10 +77,12 @@ body::before {
     .game-container {
         max-width: 480px; /* Largura máxima como smartphone */
         margin: 0 auto; /* Centraliza */
-        padding: 1rem;
+        padding: 0.5rem;
         box-shadow: 0 0 50px rgba(0, 240, 255, 0.3); /* Efeito de "tela" */
         border-left: 1px solid rgba(0, 240, 255, 0.2);
         border-right: 1px solid rgba(0, 240, 255, 0.2);
+        max-height: 100vh;
+        overflow: hidden;
     }
 }
 
@@ -93,16 +95,16 @@ body::before {
 
 .game-header {
     text-align: center;
-    margin-bottom: 0.75rem; /* Mobile-first: menor margem */
-    padding: 0.5rem; /* Mobile-first: padding menor */
+    margin-bottom: 0.25rem; /* Mobile-first: menor margem */
+    padding: 0.25rem; /* Mobile-first: padding menor */
     flex-shrink: 0;
 }
 
 /* Desktop: aumenta espaçamento */
 @media (min-width: 769px) {
     .game-header {
-        margin-bottom: 2rem;
-        padding: 1rem;
+        margin-bottom: 0.5rem;
+        padding: 0.5rem;
     }
 }
 
@@ -143,8 +145,8 @@ body::before {
 .hud {
     display: flex;
     justify-content: space-between; /* Mobile-first: espaço entre */
-    margin-bottom: 0.75rem; /* Mobile-first: menor margem */
-    padding: 0.5rem; /* Mobile-first: padding menor */
+    margin-bottom: 0.25rem; /* Mobile-first: menor margem */
+    padding: 0.25rem; /* Mobile-first: padding menor */
     background: rgba(26, 31, 46, 0.6);
     border-radius: 8px; /* Mobile-first: bordas menores */
     backdrop-filter: blur(10px);
@@ -157,8 +159,8 @@ body::before {
 @media (min-width: 769px) {
     .hud {
         justify-content: space-around;
-        margin-bottom: 2rem;
-        padding: 1rem;
+        margin-bottom: 1rem;
+        padding: 0.5rem;
         border-radius: 12px;
         gap: 0.5rem;
     }
@@ -216,7 +218,7 @@ body::before {
     border-radius: 8px; /* Mobile-first: bordas menores */
     border: 1px solid rgba(0, 240, 255, 0.3);
     overflow: hidden; /* Esconde elementos que saem dos limites */
-    min-height: 250px; /* Mobile-first: altura menor */
+    min-height: 200px; /* Mobile-first: altura menor */
     width: 100%;
     touch-action: none; /* Previne scroll durante o jogo */
 }
@@ -1117,10 +1119,10 @@ body::before {
 }
 
 .menu-option-btn {
-    +    min-height: 48px; /* Área de toque aumentada para mobile */
-    +    display: flex;
-    +    align-items: center;
-    +    justify-content: center;
+    min-height: 48px; /* Área de toque aumentada para mobile */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     padding: 1rem;
     margin-bottom: 0.75rem;

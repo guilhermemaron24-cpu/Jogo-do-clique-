@@ -15,10 +15,17 @@
     <div class="game-container">
         <header class="game-header">
             <h1 class="game-title">NEXUS PRISM</h1>
-            <p class="game-subtitle">Operador Prismático</p>
+            <div class="top-nav">
+                <button id="achievements-nav-btn" class="nav-btn" title="Conquistas">🏆</button>
+                <button id="shop-nav-btn" class="nav-btn" title="Loja">⚡</button>
+            </div>
         </header>
 
         <div class="hud">
+            <div class="hud-item">
+                <span class="hud-label">Moedas</span>
+                <span id="energy-display-hud" class="hud-value">0</span>
+            </div>
             <div class="hud-item">
                 <span class="hud-label">Energia</span>
                 <span id="score" class="hud-value">0</span>
@@ -68,11 +75,6 @@
                     <button id="start-btn" class="btn-primary" aria-label="Iniciar jogo">
                         <span class="btn-text">Iniciar Missão</span>
                     </button>
-                    <div class="button-group" style="margin-top: 1rem;">
-                        <button id="achievements-btn" class="btn-secondary" aria-label="Ver conquistas">
-                            <span class="btn-text">🏆 Conquistas</span>
-                        </button>
-                    </div>
                 </div>
             </div>
 

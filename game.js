@@ -131,7 +131,9 @@ const elements = {
     restartBtn: document.getElementById('restart-btn'),
     leaderboardBtn: document.getElementById('leaderboard-btn'),
     closeLeaderboardBtn: document.getElementById('close-leaderboard-btn'),
-    achievementsBtn: document.getElementById('achievements-btn'),
+    achievementsNavBtn: document.getElementById('achievements-nav-btn'),
+    shopNavBtn: document.getElementById('shop-nav-btn'),
+    energyDisplayHud: document.getElementById('energy-display-hud'),
     achievementsScreen: document.getElementById('achievements-screen'),
     closeAchievementsBtn: document.getElementById('close-achievements-btn'),
     achievementsList: document.getElementById('achievements-list'),
@@ -143,12 +145,11 @@ const elements = {
     finalScore: document.getElementById('final-score'),
     gameOverTitle: document.getElementById('game-over-title'),
     leaderboardList: document.getElementById('leaderboard-list'),
-    comboDisplay: null, // Será criado dinamicamente
-    multiplierDisplay: null, // Será criado dinamicamente
-    powerUpContainer: null, // Container de power-ups ativos
-    powerUpSpawnElement: null, // Elemento visual do power-up spawnado
-    energyDisplay: null, // Display de energia
-    upgradeShop: null // Loja de upgrades
+    comboDisplay: null,
+    multiplierDisplay: null,
+    powerUpContainer: null,
+    powerUpSpawnElement: null,
+    upgradeShop: null
 };
 
 /**
@@ -279,8 +280,12 @@ function init() {
         elements.closeLeaderboardBtn.addEventListener('click', hideLeaderboard);
     }
     
-    if (elements.achievementsBtn) {
-        elements.achievementsBtn.addEventListener('click', showAchievements);
+    if (elements.achievementsNavBtn) {
+        elements.achievementsNavBtn.addEventListener('click', showAchievements);
+    }
+    
+    if (elements.shopNavBtn) {
+        elements.shopNavBtn.addEventListener('click', showUpgradeShop);
     }
     
     if (elements.closeAchievementsBtn) {
@@ -1376,6 +1381,7 @@ function updateUI() {
     elements.score.textContent = gameState.score;
     elements.timer.textContent = formatTime(gameState.timeLeft);
     elements.sector.textContent = gameState.sector;
+    updateEnergyDisplay();
     
     // Atualiza barra de progresso para próximo setor
     if (gameState.isPlaying) {
@@ -2199,67 +2205,16 @@ function destroyAllTargets() {
  * Cria a UI visual do sistema de upgrades
  */
 function createUpgradeUI() {
-    const gameArea = elements.gameArea;
-    if (!gameArea) return;
-    
-    // Display de energia (canto superior esquerdo)
-    const energyContainer = document.createElement('div');
-    energyContainer.id = 'energy-container';
-    energyContainer.style.cssText = `
-        position: absolute;
-        top: 1rem;
-        left: 1rem;
-        z-index: 50;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        pointer-events: none;
-    `;
-    
-    const energyDisplay = document.createElement('div');
-    energyDisplay.id = 'energy-display';
-    energyDisplay.style.cssText = `
-        font-size: clamp(1rem, 3vw, 1.5rem);
-        font-weight: 700;
-        color: var(--accent-cyan, #00f0ff);
-        text-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
-    `;
-    energyDisplay.textContent = `⚡ ${getTotalEnergy()}`;
-    
-    energyContainer.appendChild(energyDisplay);
-    gameArea.appendChild(energyContainer);
-    
-    elements.energyDisplay = energyDisplay;
-    
-    // Botão para abrir loja (na tela de início)
-    const shopBtn = document.createElement('button');
-    shopBtn.id = 'shop-btn';
-    shopBtn.className = 'btn-secondary';
-    shopBtn.innerHTML = '<span class="btn-text">⚡ Loja de Upgrades</span>';
-    shopBtn.style.cssText = `
-        margin-top: 1rem;
-        min-height: 44px;
-        touch-action: manipulation;
-    `;
-    shopBtn.addEventListener('click', showUpgradeShop);
-    
-    // Adiciona botão na tela de início
-    if (elements.startScreen) {
-        const screenContent = elements.startScreen.querySelector('.screen-content');
-        if (screenContent) {
-            screenContent.appendChild(shopBtn);
-        }
-    }
-    
-    elements.upgradeShop = null; // Será criado dinamicamente
+    // Agora o display de energia e o botão de loja estão fixos no HUD e Header
+    updateEnergyDisplay();
 }
 
 /**
  * Atualiza o display de energia
  */
 function updateEnergyDisplay() {
-    if (elements.energyDisplay) {
-        elements.energyDisplay.textContent = `⚡ ${getTotalEnergy()}`;
+    if (elements.energyDisplayHud) {
+        elements.energyDisplayHud.textContent = getTotalEnergy();
     }
 }
 

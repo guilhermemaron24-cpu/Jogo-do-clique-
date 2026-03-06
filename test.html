@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testes - Nexus Prism</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0e1a;
+            color: #00f0ff;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .test-container {
+            background: rgba(26, 31, 46, 0.8);
+            border: 2px solid #00f0ff;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #00f0ff, #ff00f0);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0.5rem;
+            text-transform: uppercase;
+        }
+        .test-button:hover {
+            transform: scale(1.05);
+        }
+        .test-results {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .test-pass { color: #00ff00; }
+        .test-fail { color: #ff0000; }
+        .test-warn { color: #ffaa00; }
+        .test-bug { color: #ff00ff; }
+        pre {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Testes Automatizados - Nexus Prism</h1>
+    
+    <div class="test-container">
+        <h2>Controles de Teste</h2>
+        <button class="test-button" onclick="runQuickTests()">Testes Rápidos</button>
+        <button class="test-button" onclick="runFullSimulation()">Simulação Completa</button>
+        <button class="test-button" onclick="testScoreCalculation()">Testar Cálculo de Pontos</button>
+        <button class="test-button" onclick="testSectorProgression()">Testar Progressão</button>
+        <button class="test-button" onclick="clearResults()">Limpar Resultados</button>
+    </div>
+    
+    <div class="test-container">
+        <h2>Resultados</h2>
+        <div id="test-results" class="test-results">
+            <p>Clique em um botão para executar testes...</p>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { runAllTests, getTestResults } from './test/gameTester.js';
+        
+        window.runQuickTests = async function() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<p>🔄 Executando testes rápidos...</p>';
+            
+            try {
+                const results = await runAllTests();
+                displayResults(results);
+            } catch (error) {
+                resultsDiv.innerHTML += `<p class="test-fail">❌ Erro: ${error.message}</p>`;
+                console.error(error);
+            }
+        };
+        
+        window.runFullSimulation = async function() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<p>🔄 Executando simulação completa (pode levar alguns segundos)...</p>';
+            
+            // Importa função de simulação completa
+            const { testFullGameSimulation } = await import('./test/gameTester.js');
+            
+            try {
+                await testFullGameSimulation();
+                const results = getTestResults();
+                displayResults(results);
+            } catch (error) {
+                resultsDiv.innerHTML += `<p class="test-fail">❌ Erro: ${error.message}</p>`;
+                console.error(error);
+            }
+        };
+        
+        window.testScoreCalculation = async function() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<p>🔄 Testando cálculo de pontos...</p>';
+            
+            // Testa diferentes cenários
+            const scenarios = [
+                { combo: 0, powerUp: 1.0, expected: 1 },
+                { combo: 10, powerUp: 1.0, expected: 2 },
+                { combo: 20, powerUp: 1.0, expected: 3 },
+                { combo: 10, powerUp: 3.0, expected: 6 },
+            ];
+            
+            let html = '<h3>Teste de Cálculo de Pontos</h3>';
+            scenarios.forEach((scenario, i) => {
+                const comboMult = getComboMultiplier(scenario.combo);
+                const total = comboMult * scenario.powerUp;
+                const points = Math.floor(1 * total);
+                const passed = points === scenario.expected;
+                
+                html += `<p class="${passed ? 'test-pass' : 'test-fail'}">
+                    ${passed ? '✅' : '❌'} Cenário ${i + 1}: Combo ${scenario.combo} (${comboMult}x) × Power-up ${scenario.powerUp}x = ${total}x → ${points} pontos 
+                    ${passed ? '' : `(Esperado: ${scenario.expected})`}
+                </p>`;
+            });
+            
+            resultsDiv.innerHTML = html;
+        };
+        
+        window.testSectorProgression = function() {
+            const resultsDiv = document.getElementById('test-results');
+            const thresholds = [0, 15, 40, 100, 250, 600];
+            const sectors = [1, 2, 3, 4, 5, 6];
+            
+            let html = '<h3>Teste de Progressão de Setores</h3>';
+            html += '<table style="width: 100%; border-collapse: collapse;">';
+            html += '<tr><th>Score</th><th>Setor Esperado</th><th>Status</th></tr>';
+            
+            thresholds.forEach((threshold, i) => {
+                html += `<tr>
+                    <td>${threshold}+</td>
+                    <td>Setor ${sectors[i]}</td>
+                    <td class="test-pass">✅</td>
+                </tr>`;
+            });
+            
+            html += '</table>';
+            resultsDiv.innerHTML = html;
+        };
+        
+        window.clearResults = function() {
+            document.getElementById('test-results').innerHTML = '<p>Resultados limpos.</p>';
+        };
+        
+        function getComboMultiplier(combo) {
+            const multipliers = { 0: 1.0, 5: 1.5, 10: 2.0, 15: 2.5, 20: 3.0, 30: 4.0, 50: 5.0, 75: 6.0, 100: 7.5 };
+            let multiplier = 1.0;
+            for (const [threshold, mult] of Object.entries(multipliers)) {
+                if (combo >= parseInt(threshold) && mult > multiplier) {
+                    multiplier = mult;
+                }
+            }
+            return multiplier;
+        }
+        
+        function displayResults(results) {
+            const resultsDiv = document.getElementById('test-results');
+            let html = '<h3>Relatório de Testes</h3>';
+            
+            html += `<p>✅ Passou: ${results.passed.length}</p>`;
+            html += `<p class="test-fail">❌ Falhou: ${results.failed.length}</p>`;
+            html += `<p class="test-warn">⚠️ Avisos: ${results.warnings.length}</p>`;
+            html += `<p class="test-bug">🐛 Bugs: ${results.bugs.length}</p>`;
+            
+            if (results.failed.length > 0) {
+                html += '<h4 class="test-fail">Falhas:</h4><ul>';
+                results.failed.forEach(f => {
+                    html += `<li>${f.test}: ${f.issue}</li>`;
+                });
+                html += '</ul>';
+            }
+            
+            if (results.bugs.length > 0) {
+                html += '<h4 class="test-bug">Bugs Encontrados:</h4><ul>';
+                results.bugs.forEach(b => {
+                    html += `<li>${b.test}: ${b.issue}${b.value !== undefined ? ` (Valor: ${b.value})` : ''}</li>`;
+                });
+                html += '</ul>';
+            }
+            
+            if (results.warnings.length > 0) {
+                html += '<h4 class="test-warn">Avisos:</h4><ul>';
+                results.warnings.forEach(w => {
+                    html += `<li>${w.test}: ${w.issue}</li>`;
+                });
+                html += '</ul>';
+            }
+            
+            resultsDiv.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

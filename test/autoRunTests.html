@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testes Automáticos - Nexus Prism</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0e1a;
+            color: #00f0ff;
+            padding: 2rem;
+        }
+        .console {
+            background: #000;
+            border: 2px solid #00f0ff;
+            padding: 1rem;
+            border-radius: 4px;
+            min-height: 400px;
+            max-height: 600px;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .log { color: #00f0ff; }
+        .success { color: #00ff00; }
+        .error { color: #ff0000; }
+        .warn { color: #ffaa00; }
+        .bug { color: #ff00ff; }
+        h1 { text-align: center; }
+        .summary {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(26, 31, 46, 0.8);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Executando Testes Automatizados...</h1>
+    <div id="console" class="console"></div>
+    <div id="summary" class="summary" style="display: none;"></div>
+    
+    <script type="module">
+        const consoleDiv = document.getElementById('console');
+        const summaryDiv = document.getElementById('summary');
+        
+        // Redireciona console.log para a div
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        
+        function addLog(message, type = 'log') {
+            const p = document.createElement('p');
+            p.className = type;
+            p.textContent = message;
+            consoleDiv.appendChild(p);
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+        
+        console.log = (...args) => {
+            originalLog.apply(console, args);
+            addLog(args.join(' '), 'log');
+        };
+        
+        console.error = (...args) => {
+            originalError.apply(console, args);
+            addLog(args.join(' '), 'error');
+        };
+        
+        console.warn = (...args) => {
+            originalWarn.apply(console, args);
+            addLog(args.join(' '), 'warn');
+        };
+        
+        // Importa e executa testes
+        async function runTests() {
+            try {
+                const { runAllTests, getTestResults } = await import('./gameTester.js');
+                
+                console.log('🚀 Iniciando execução dos testes...\n');
+                
+                const results = await runAllTests();
+                
+                // Exibe resumo
+                summaryDiv.style.display = 'block';
+                summaryDiv.innerHTML = `
+                    <h2>📊 Resumo dos Testes</h2>
+                    <p class="success">✅ Passou: ${results.passed.length}</p>
+                    <p class="error">❌ Falhou: ${results.failed.length}</p>
+                    <p class="warn">⚠️ Avisos: ${results.warnings.length}</p>
+                    <p class="bug">🐛 Bugs: ${results.bugs.length}</p>
+                    
+                    ${results.bugs.length > 0 ? `
+                        <h3 style="color: #ff00ff; margin-top: 1rem;">Bugs Encontrados:</h3>
+                        <ul>
+                            ${results.bugs.map(bug => `<li>${bug.test}: ${bug.issue}</li>`).join('')}
+                        </ul>
+                    ` : ''}
+                    
+                    ${results.failed.length > 0 ? `
+                        <h3 style="color: #ff0000; margin-top: 1rem;">Falhas:</h3>
+                        <ul>
+                            ${results.failed.map(fail => `<li>${fail.test}: ${fail.issue}</li>`).join('')}
+                        </ul>
+                    ` : ''}
+                `;
+                
+                console.log('\n✅ Testes concluídos! Verifique o resumo abaixo.');
+                
+            } catch (error) {
+                console.error('❌ Erro ao executar testes:', error);
+                addLog(`Erro: ${error.message}`, 'error');
+            }
+        }
+        
+        // Executa automaticamente
+        runTests();
+    </script>
+</body>
+</html>
+

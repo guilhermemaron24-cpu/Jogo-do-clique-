@@ -71,24 +71,25 @@ body::before {
     overflow: hidden;
 }
 
-/* Desktop: centraliza e limita largura (simula mobile em desktop) */
+/* Desktop: centraliza e limita largura (visual de dispositivo premium) */
 @media (min-width: 769px) {
     .game-container {
-        max-width: 480px; /* Largura máxima como smartphone */
-        margin: 0 auto; /* Centraliza */
-        padding: 0.5rem;
-        box-shadow: 0 0 50px rgba(0, 240, 255, 0.3); /* Efeito de "tela" */
-        border-left: 1px solid rgba(0, 240, 255, 0.2);
-        border-right: 1px solid rgba(0, 240, 255, 0.2);
-        max-height: 100vh;
+        max-width: 550px; /* Largura ajustada para melhor proporção */
+        height: 85vh; /* Altura reduzida para não ficar 'comprido' demais */
+        margin: 7.5vh auto; /* Centraliza verticalmente e horizontalmente */
+        padding: 1.5rem;
+        background: rgba(13, 18, 33, 0.95);
+        border: 2px solid rgba(0, 240, 255, 0.3);
+        border-radius: 32px; /* Visual arredondado moderno */
+        box-shadow: 0 0 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 240, 255, 0.2);
         overflow: hidden;
     }
 }
 
-/* Telas muito grandes: mantém largura limitada */
-@media (min-width: 1024px) {
+/* Telas muito grandes: mantém proporção equilibrada */
+@media (min-width: 1440px) {
     .game-container {
-        max-width: 480px; /* Mantém largura de smartphone */
+        max-width: 600px;
     }
 }
 

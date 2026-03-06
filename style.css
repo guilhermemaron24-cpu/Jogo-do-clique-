@@ -24,12 +24,12 @@ body {
     background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
     color: var(--text-primary);
     min-height: 100vh;
-    min-height: 100dvh; /* Dynamic viewport height para mobile */
-    overflow-x: hidden; /* Previne scroll horizontal */
-    overflow-y: auto; /* Permite scroll vertical se necessário */
+    min-height: 100dvh;
+    overflow: hidden; /* Evita scroll acidental no body */
     position: relative;
-    -webkit-tap-highlight-color: transparent; /* Remove highlight ao tocar */
-    touch-action: manipulation; /* Melhora performance touch */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: none; /* Previne gestos do sistema que atrapalham o jogo */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 /* Desktop: adiciona padrão de fundo quando container é menor */
@@ -61,14 +61,14 @@ body::before {
 .game-container {
     position: relative;
     z-index: 1;
-    min-height: 100vh;
-    min-height: 100dvh; /* Dynamic viewport height */
+    height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
-    padding: 0.5rem; /* Mobile-first: padding menor */
+    padding: 0.75rem;
     max-width: 100%;
-    overflow-x: hidden;
-    width: 100%;
+    margin: 0 auto;
+    overflow: hidden;
 }
 
 /* Desktop: centraliza e limita largura (simula mobile em desktop) */
@@ -152,18 +152,18 @@ body::before {
 }
 
 .hud {
-    display: flex;
-    justify-content: space-between; /* Mobile-first: espaço entre */
-    margin-bottom: 0.25rem; /* Mobile-first: menor margem */
-    padding: 0.4rem; /* Mobile-first: padding menor */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding: 0.75rem;
     background: var(--glass-bg);
-    border-radius: 12px; /* Mobile-first: bordas menores */
+    border-radius: 12px;
     backdrop-filter: blur(15px) saturate(180%);
     -webkit-backdrop-filter: blur(15px) saturate(180%);
     border: 1px solid var(--glass-border);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     flex-shrink: 0;
-    gap: 0.25rem; /* Mobile-first: gap menor */
 }
 
 @media (min-width: 769px) {
@@ -268,17 +268,24 @@ body::before {
 
 .game-area {
     flex: 1;
-    position: relative; /* Importante para posicionamento absoluto dos alvos */
+    position: relative;
     background: rgba(5, 8, 18, 0.6);
-    border-radius: 12px; /* Mobile-first: bordas menores */
+    border-radius: 16px;
     border: 1px solid rgba(0, 240, 255, 0.2);
-    overflow: hidden; /* Esconde elementos que saem dos limites */
-    min-height: 200px; /* Mobile-first: altura menor */
+    overflow: hidden;
     width: 100%;
-    touch-action: none; /* Previne scroll durante o jogo */
+    touch-action: none;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
-/* Efeito de Scanlines */
+/* Telas muito curtas (Landscape mobile) */
+@media (max-height: 500px) {
+    .game-header { display: none; }
+    .hud { padding: 0.25rem; margin-bottom: 0.25rem; }
+    .hud-value { font-size: 1rem; }
+}
+
+/* Efeito de Scanlines Melhorado */
 .game-area::after {
     content: "";
     position: absolute;
@@ -287,14 +294,14 @@ body::before {
     width: 100%;
     height: 100%;
     background: linear-gradient(
-        rgba(18, 16, 16, 0) 50%,
-        rgba(0, 0, 0, 0.15) 50%
+        transparent 50%,
+        rgba(0, 0, 0, 0.3) 50%
     );
     background-size: 100% 4px;
     pointer-events: none;
     z-index: 2;
-    opacity: 0.3;
-    animation: scanlineScroll 10s linear infinite;
+    opacity: 0.2;
+    animation: scanlineScroll 15s linear infinite;
 }
 
 @keyframes scanlineScroll {

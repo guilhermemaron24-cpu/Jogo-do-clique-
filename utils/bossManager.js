@@ -227,11 +227,8 @@ export function startBossForSector(sectorNumber, onComplete, options = {}) {
         const count = 1 + Math.floor(Math.random() * 3);
         for (let i=0;i<count;i++) spawnBossTarget();
         spawned++;
-        // Se alcançamos a contagem de waves planejada, e o chefe ainda estiver vivo, continue spawns until hp 0
-        if (spawned >= effectiveWaveCount) {
-            // continue spawning but could reduce frequency; here we clear interval to avoid infinite growth
-            clearInterval(waveTimer);
-        }
+        // Removido o limite de waves para garantir que o jogador possa terminar a batalha
+        // Mesmo após o 'effectiveWaveCount', o chefe continuará enviando órbitas
     }, effectiveWaveInterval);
     _bossState.timers.push(waveTimer);
 

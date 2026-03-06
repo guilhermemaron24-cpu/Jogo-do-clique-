@@ -171,8 +171,9 @@ export function createSectorProgressBar(container, currentScore, currentSector) 
     const sectorThresholds = [0, 15, 40, 100, 250, 600];
     const maxSector = 6;
     
-    if (currentSector >= maxSector) {
-        // Já está no último setor
+    const bossHud = document.getElementById('boss-hud');
+    if (currentSector >= maxSector || (bossHud && bossHud.style.display !== 'none')) {
+        // Já está no último setor ou há um chefe ativo
         return null;
     }
     

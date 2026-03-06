@@ -241,8 +241,9 @@ function init() {
         bossManager.initBossManager(elements.gameArea, {
             onBossEnd: ({ success, bossId }) => {
                 console.log('Boss ended:', bossId, 'success:', success);
-                // re-aplica visuais do setor e retoma spawn
+                // re-aplica visuais do setor, atualiza UI e retoma spawn
                 applySectorVisuals(elements.gameArea, gameState.sector);
+                updateUI(); 
                 setTimeout(() => {
                     if (gameState.isPlaying) spawnTarget();
                 }, 300);

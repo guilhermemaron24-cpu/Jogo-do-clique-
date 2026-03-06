@@ -71,17 +71,18 @@ body::before {
     overflow: hidden;
 }
 
-/* Desktop: centraliza e limita largura (visual de dispositivo premium) */
+/* Desktop: centraliza e amplia largura para melhor jogabilidade */
 @media (min-width: 769px) {
     .game-container {
-        max-width: 550px; /* Largura ajustada para melhor proporção */
-        height: 85vh; /* Altura reduzida para não ficar 'comprido' demais */
-        margin: 7.5vh auto; /* Centraliza verticalmente e horizontalmente */
-        padding: 1.5rem;
+        max-width: 850px; /* Muito mais largo para evitar visual 'tripa' */
+        width: 90%;
+        height: 80vh;
+        margin: 10vh auto;
+        padding: 2rem;
         background: rgba(13, 18, 33, 0.95);
         border: 2px solid rgba(0, 240, 255, 0.3);
-        border-radius: 32px; /* Visual arredondado moderno */
-        box-shadow: 0 0 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 240, 255, 0.2);
+        border-radius: 32px;
+        box-shadow: 0 0 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 240, 255, 0.2);
         overflow: hidden;
     }
 }

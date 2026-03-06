@@ -934,17 +934,14 @@ function transitionToSector(newSector) {
                 if (gameState.isPlaying && gameState.timeLeft > 0) {
                     try {
                         if (bossManager.shouldSpawnForSector(newSector) && !bossManager.isBossActive()) {
-                            // pausa e inicia fluxo de chefe; bossManager chamará callback on completion
-                            const wasPlaying = gameState.isPlaying;
-                            gameState.isPlaying = false;
-                            if (gameState.gameTimer) { clearInterval(gameState.gameTimer); gameState.gameTimer = null; }
-
+                            // Inicia fluxo de chefe; bossManager gerencia seus próprios alvos
+                            // O timer continua rodando para manter a pressão do tempo
                             bossManager.startBossForSector(newSector, ({ success, bossId }) => {
                                 console.log('Boss flow finished:', bossId, success);
-                                gameState.isPlaying = wasPlaying;
-                                if (gameState.isPlaying && gameState.timeLeft > 0) startTimer();
-                                // spawn normal após boss
-                                setTimeout(() => { if (gameState.isPlaying) spawnTarget(); }, 300);
+                                // Após boss, volta ao fluxo normal se ainda houver tempo
+                                if (gameState.isPlaying && gameState.timeLeft > 0) {
+                                    setTimeout(() => { spawnTarget(); }, 300);
+                                }
                             });
                         } else {
                             spawnTarget();

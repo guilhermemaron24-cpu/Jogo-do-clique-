@@ -67,10 +67,15 @@ export function startBossForSector(sectorNumber, onComplete, options = {}) {
     _bossState.hp = _bossState.maxHp;
     _bossState.timers = [];
 
-    // Visual overlay removed (user requested only visual removal).
-    // Orbs will still spawn in the `gameArea` and boss logic remains active.
-    // We keep a conceptual boss area (center of game area) for spawn calculations.
-    _bossState.overlay = null;
+    // Mostra HUD do chefe
+    const bossHud = document.getElementById('boss-hud');
+    const bossNameElem = document.getElementById('boss-name');
+    if (bossHud) {
+        bossHud.style.display = 'block';
+        if (bossNameElem) bossNameElem.textContent = boss.name || 'CHEFE';
+    }
+    updateHpBar();
+
     // efeito sonoro de aparição do chefe (sintético se não houver mp3)
     try { playSound('boss-appear'); } catch(e){ /* ignore */ }
 
@@ -104,6 +109,25 @@ export function startBossForSector(sectorNumber, onComplete, options = {}) {
         _bossState.nextOrbSide = side === 'left' ? 'right' : 'left';
 
         const orbSize = 72;
+        t.style.width = `${orbSize}px`;
+        t.style.height = `${orbSize}px`;
+        t.style.borderRadius = '50%';
+        t.style.backgroundColor = 'rgba(255, 0, 80, 0.3)';
+        t.style.border = '2px solid #ff0050';
+        t.style.boxShadow = '0 0 20px rgba(255, 0, 80, 0.6)';
+        
+        // Adiciona um núcleo brilhante
+        const core = t.querySelector('.core');
+        if (core) {
+            core.style.cssText = `
+                width: 30%;
+                height: 30%;
+                background: #ffffff;
+                border-radius: 50%;
+                box-shadow: 0 0 15px #ffffff;
+            `;
+        }
+
         const horizontalOffset = Math.max(120, Math.floor(bossGlobal.width / 2) + 40);
         let px = side === 'left' ? bossCenterX - horizontalOffset - orbSize / 2 : bossCenterX + horizontalOffset - orbSize / 2;
         // vertical jitter so orbs are not exactly level
@@ -228,6 +252,9 @@ export function endBoss(success = true) {
     _bossState.timers.forEach(t => clearTimeout(t));
     _bossState.timers = [];
     document.querySelectorAll('.boss-target').forEach(el => el.remove());
+    const bossHud = document.getElementById('boss-hud');
+    if (bossHud) bossHud.style.display = 'none';
+
     if (_bossState.overlay) {
         // remove active class to stop pulsing
         _bossState.overlay.classList.remove('boss-active');

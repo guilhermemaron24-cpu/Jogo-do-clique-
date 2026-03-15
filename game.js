@@ -1434,10 +1434,7 @@ function hideLeaderboard() {
 function showAchievements() {
     elements.achievementsScreen.style.display = 'flex';
     
-    // Esconde display de energia flutuante quando tela de conquistas está aberta
-    if (elements.energyDisplay && elements.energyDisplay.parentElement) {
-        elements.energyDisplay.parentElement.style.display = 'none';
-    }
+    // O display de energia agora fica fixo no HUD, então não precisamos esconder
     
     // Mostra botão de menu na tela de conquistas
     if (elements.menuBtn) {
@@ -1453,10 +1450,7 @@ function showAchievements() {
 function hideAchievements() {
     elements.achievementsScreen.style.display = 'none';
     
-    // Mostra display de energia flutuante novamente quando tela de conquistas fecha
-    if (elements.energyDisplay && elements.energyDisplay.parentElement) {
-        elements.energyDisplay.parentElement.style.display = 'flex';
-    }
+    // O display de energia agora fica fixo no HUD, então não precisamos esconder
 }
 
 /**
@@ -2900,7 +2894,7 @@ function initializeGame() {
         // Resolve elementos pendentes que podem ter sido buscados antes do DOM estar pronto
         resolveMissingElements();
         // Elementos que são criados dinamicamente (não precisam existir no HTML)
-        const dynamicElements = ['comboDisplay', 'multiplierDisplay', 'powerUpContainer', 'powerUpSpawnElement', 'energyDisplay', 'upgradeShop'];
+        const dynamicElements = ['comboDisplay', 'multiplierDisplay', 'powerUpContainer', 'powerUpSpawnElement', 'upgradeShop'];
         
         // Verifica se todos os elementos foram encontrados (exceto os dinâmicos)
         const missingElements = Object.entries(elements)

@@ -222,15 +222,24 @@ export function startBossForSector(sectorNumber, onComplete, options = {}) {
     const effectiveWaveInterval = Math.max(600, Math.floor((boss.waveInterval || 1800) / appliedScale));
     const effectiveWaveCount = Math.max(1, Math.round((boss.waveCount || 6) * appliedScale));
 
-    const waveTimer = setInterval(() => {
-        if (!_bossState.active) { clearInterval(waveTimer); return; }
-        const count = 1 + Math.floor(Math.random() * 3);
-        for (let i=0;i<count;i++) spawnBossTarget();
-        spawned++;
-        // Removido o limite de waves para garantir que o jogador possa terminar a batalha
-        // Mesmo após o 'effectiveWaveCount', o chefe continuará enviando órbitas
-    }, effectiveWaveInterval);
-    _bossState.timers.push(waveTimer);
+    function scheduleWave() {
+        if (!_bossState.active) return;
+        
+        const waveTimer = setTimeout(() => {
+            if (!_bossState.active) return;
+            const count = 1 + Math.floor(Math.random() * 3);
+            for (let i=0; i<count; i++) spawnBossTarget();
+            spawned++;
+            
+            // Reagenda a próxima onda
+            scheduleWave();
+        }, effectiveWaveInterval);
+        
+        _bossState.timers.push(waveTimer);
+    }
+    
+    // Inicia a primeira onda
+    scheduleWave();
 
     _bossState.updateHpBar = updateHpBar;
 
